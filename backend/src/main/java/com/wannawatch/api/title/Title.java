@@ -51,7 +51,11 @@ public class Title {
     @BatchSize(size = 50)
     private Set<Video> videos = new LinkedHashSet<>();
 
-    protected Title() {}
+    @OneToMany(mappedBy = "title")
+    @BatchSize(size = 50)
+    private Set<Availability> availability = new LinkedHashSet<>();
+
+    public Title() {}
 
     public Long getId() { return id; }
     public String getExternalId() { return externalId; }
@@ -64,4 +68,32 @@ public class Title {
     public BigDecimal getPopularity() { return popularity; }
     public Set<Genre> getGenres() { return genres; }
     public Set<Video> getVideos() { return videos; }
+    public Set<Availability> getAvailability() { return availability; }
+
+    public void setImportedValues(String externalId, Type type, String name, Integer releaseYear,
+                                  String synopsis, String posterUrl, BigDecimal rating, BigDecimal popularity) {
+        this.externalId = externalId;
+        this.type = type;
+        this.name = name;
+        this.releaseYear = releaseYear;
+        this.synopsis = synopsis;
+        this.posterUrl = posterUrl;
+        this.rating = rating;
+        this.popularity = popularity == null ? BigDecimal.ZERO : popularity;
+    }
+
+    public void updateFrom(Title source) {
+        type = source.type;
+        name = source.name;
+        releaseYear = source.releaseYear;
+        synopsis = source.synopsis;
+        posterUrl = source.posterUrl;
+        rating = source.rating;
+        popularity = source.popularity;
+    }
+
+    public void replaceGenres(Set<Genre> values) {
+        genres.clear();
+        genres.addAll(values);
+    }
 }

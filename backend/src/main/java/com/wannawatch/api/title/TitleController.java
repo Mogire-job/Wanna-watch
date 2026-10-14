@@ -3,8 +3,6 @@ package com.wannawatch.api.title;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/titles")
 public class TitleController {
@@ -16,14 +14,20 @@ public class TitleController {
     }
 
     @GetMapping
-    public List<TitleDto> feed(@RequestParam(required = false) String q,
-                               @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "20") int size) {
-        return service.feed(q, page, size);
+    public TitlePageDto feed(@RequestParam(required = false) String q,
+                             @RequestParam(required = false) Title.Type type,
+                             @RequestParam(required = false) String genre,
+                             @RequestParam(required = false) String provider,
+                             @RequestParam(defaultValue = "${app.default-country:US}") String country,
+                             @RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "20") int size) {
+        return service.feed(q, type, genre, provider, country, page, size);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TitleDto> get(@PathVariable long id) {
-        return service.get(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TitleDto> get(
+            @PathVariable long id,
+            @RequestParam(defaultValue = "${app.default-country:US}") String country) {
+        return service.get(id, country).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

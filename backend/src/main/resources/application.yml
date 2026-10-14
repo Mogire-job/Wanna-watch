@@ -1,19 +1,38 @@
 spring:
+  config:
+    import: "optional:file:../.env[.properties]"
   application:
     name: wanna-watch-api
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/wannawatch}
-    username: ${DB_USER:wannawatch}
-    password: ${DB_PASSWORD:wannawatch}
+    url: ${WANNA_WATCH_DB_URL:jdbc:postgresql://localhost:5433/wannawatch}
+    username: ${WANNA_WATCH_DB_USER:wannawatch}
+    password: ${WANNA_WATCH_DB_PASSWORD:wannawatch}
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: validate
   flyway:
     enabled: true
+  mail:
+    host: ${WANNA_WATCH_SMTP_HOST:localhost}
+    port: ${WANNA_WATCH_SMTP_PORT:1025}
+    username: ${WANNA_WATCH_SMTP_USERNAME:}
+    password: ${WANNA_WATCH_SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${WANNA_WATCH_SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${WANNA_WATCH_SMTP_STARTTLS:false}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${WANNA_WATCH_GOOGLE_CLIENT_ID:disabled}
+            client-secret: ${WANNA_WATCH_GOOGLE_CLIENT_SECRET:disabled}
+            scope: openid, profile, email
 
 server:
-  port: 8080
+  port: ${WANNA_WATCH_SERVER_PORT:8081}
+  forward-headers-strategy: framework
 
 management:
   endpoints:
@@ -22,6 +41,12 @@ management:
         include: health,info
 
 app:
-  # Default country for availability lookups. Expansion = add more codes.
-  default-country: KE
-  cors-allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
+  default-country: ${WANNA_WATCH_DEFAULT_COUNTRY:US}
+  cors-allowed-origins: ${WANNA_WATCH_CORS_ORIGINS:http://localhost:5174,http://127.0.0.1:5174}
+  frontend-url: ${WANNA_WATCH_FRONTEND_URL:http://localhost:5174}
+  google-sign-in-enabled: ${WANNA_WATCH_GOOGLE_SIGN_IN_ENABLED:false}
+  mail-from: ${WANNA_WATCH_MAIL_FROM:no-reply@wannawatch.local}
+  sync-token: ${WANNA_WATCH_SYNC_TOKEN:}
+  tmdb:
+    api-read-access-token: ${WANNA_WATCH_TMDB_API_READ_ACCESS_TOKEN:}
+    sync-pages: ${WANNA_WATCH_TMDB_SYNC_PAGES:1}

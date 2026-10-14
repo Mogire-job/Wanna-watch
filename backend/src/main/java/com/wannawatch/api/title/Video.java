@@ -24,6 +24,12 @@ public class Video {
 
     protected Video() {}
 
+    public Video(Title title, String youtubeKey, String language) {
+        this.title = title;
+        this.youtubeKey = youtubeKey;
+        this.language = language;
+    }
+
     public Long getId() { return id; }
     public Title getTitle() { return title; }
     public String getYoutubeKey() { return youtubeKey; }
