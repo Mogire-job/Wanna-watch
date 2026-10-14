@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: wanna-watch-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/wannawatch}
+    username: ${DB_USER:wannawatch}
+    password: ${DB_PASSWORD:wannawatch}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  # Default country for availability lookups. Expansion = add more codes.
+  default-country: KE
+  cors-allowed-origins: ${CORS_ORIGINS:http://localhost:5173}

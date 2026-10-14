@@ -1,0 +1,27 @@
+package com.wannawatch.api.title;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public record TitleDto(
+        Long id,
+        Title.Type type,
+        String name,
+        Integer releaseYear,
+        String synopsis,
+        String posterUrl,
+        BigDecimal rating,
+        List<String> genres,
+        String trailerKey) {
+
+    static TitleDto from(Title t) {
+        String trailer = t.getVideos().stream()
+                .filter(v -> "OFFICIAL_TRAILER".equals(v.getKind()))
+                .map(Video::getYoutubeKey)
+                .findFirst()
+                .orElse(null);
+        List<String> genres = t.getGenres().stream().map(Genre::getName).sorted().toList();
+        return new TitleDto(t.getId(), t.getType(), t.getName(), t.getReleaseYear(),
+                t.getSynopsis(), t.getPosterUrl(), t.getRating(), genres, trailer);
+    }
+}
